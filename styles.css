@@ -1,13 +1,16 @@
-body{ margin:0; font-family:Inter, Arial, sans-serif; background:#0f1720; color:#e6eef3; }
-.page-header{
-  display:flex; gap:18px; align-items:center; padding:18px; background:linear-gradient(90deg,#071428 0%, #0f2a3a 100%);
-}
+body{ margin:0; font-family:Inter, Arial, sans-serif; background:#071426; color:#e6eef3; }
+.page-header{ display:flex; gap:18px; align-items:center; padding:18px; background:linear-gradient(90deg,#031220,#062332); }
 .page-header img.brand{ width:120px; height:80px; object-fit:cover; border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,0.5) }
-.page-header h1{ margin:0; font-size:20px }
-.muted{ color:#9fb6c6; margin:3px 0 0 0; font-size:13px }
+.page-header h1{ margin:0; font-size:18px }
+.muted{ color:#9fb6c6; font-size:13px; margin-top:6px; }
 
-.controls{ padding:14px; display:flex; gap:12px; align-items:center; background:#08121a; }
-.controls select, .controls button { padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:#0b1620; color:#dff7ff }
-.controls label{ color:#9fb6c6; font-size:14px }
+.controls{ padding:12px; display:flex; gap:12px; align-items:center; background:#081728; border-bottom:1px solid rgba(255,255,255,0.03); }
+.controls select, .controls button, .controls input{ padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:#0b1620; color:#dff7ff }
 
 .page-footer{ padding:14px; color:#7ea6bb; background:linear-gradient(180deg,#031220,#001826) }
+
+/* modal */
+.modal{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.6); }
+.modal.hidden{ display:none; }
+.modal-inner{ background:#0e2430; padding:20px; border-radius:12px; width:420px; color:#dff7ff; }
+.modal-inner h3{ margin-top:0; }
