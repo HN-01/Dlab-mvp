@@ -1,0 +1,8 @@
+{
+  "hcl": {"name":"Hydrochloric acid","formula":"HCl","density_g_ml":1.18,"molar_mass":36.46,"pKa":-7,"hazard":"corrosive"},
+  "naoh": {"name":"Sodium hydroxide","formula":"NaOH","density_g_ml":2.13,"molar_mass":40.00,"pKb":-0.2,"hazard":"corrosive"},
+  "water": {"name":"Water","formula":"H2O","density_g_ml":1.00,"molar_mass":18.02,"hazard":"none"},
+  "ethanol": {"name":"Ethanol","formula":"C2H5OH","density_g_ml":0.789,"molar_mass":46.07,"hazard":"flammable"},
+  "phenolph": {"name":"Phenolphthalein (indicator)","formula":"C20H14O4","density_g_ml":1.2,"molar_mass":318.32,"hazard":"irritant"},
+  "agno3": {"name":"Silver nitrate","formula":"AgNO3","density_g_ml":4.35,"molar_mass":169.87,"hazard":"oxidizer"}
+}
