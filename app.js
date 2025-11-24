@@ -197,3 +197,6 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 
 ();
+const provider = new firebase.auth.GoogleAuthProvider();
+firebase.auth().signInWithPopup(provider).then(result => { console.log('user', result.user); });
+
