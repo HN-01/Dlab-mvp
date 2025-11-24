@@ -1,1 +1,122 @@
-<h1>Chemistry Lab</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chemistry Lab – Dlab</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f8ff;
+            padding: 20px;
+        }
+        h1 {
+            color: #0047ab;
+        }
+        .container {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        .panel {
+            width: 45%;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        select, button {
+            padding: 10px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        #resultBox {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            margin-top: 10px;
+            background: #eee;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🧪 Chemistry Lab</h1>
+<p>Select chemicals, mix them, observe reactions — your virtual lab is ready.</p>
+
+<div class="container">
+
+    <!-- Left Panel -->
+    <div class="panel">
+        <h2>Choose Chemicals</h2>
+
+        <label>Chemical 1</label>
+        <select id="chem1">
+            <option value="">-- Select --</option>
+            <option value="acid">Acid</option>
+            <option value="base">Base</option>
+            <option value="water">Water</option>
+            <option value="salt">Salt</option>
+            <option value="alcohol">Alcohol</option>
+        </select>
+
+        <label>Chemical 2</label>
+        <select id="chem2">
+            <option value="">-- Select --</option>
+            <option value="acid">Acid</option>
+            <option value="base">Base</option>
+            <option value="water">Water</option>
+            <option value="salt">Salt</option>
+            <option value="alcohol">Alcohol</option>
+        </select>
+
+        <button onclick="mix()">Mix Chemicals</button>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="panel">
+        <h2>Reaction Output</h2>
+        <div id="resultBox"></div>
+        <p id="reactionText"></p>
+    </div>
+
+</div>
+
+<script>
+function mix() {
+    const c1 = document.getElementById("chem1").value;
+    const c2 = document.getElementById("chem2").value;
+    const box = document.getElementById("resultBox");
+    const text = document.getElementById("reactionText");
+
+    if (!c1 || !c2) {
+        alert("Please select both chemicals.");
+        return;
+    }
+
+    let color = "lightgray";
+    let result = "No reaction.";
+
+    if (c1 === "acid" && c2 === "base" || c1 === "base" && c2 === "acid") {
+        color = "lightgreen";
+        result = "Neutralization! A salt + water is formed.";
+    }
+    else if (c1 === "water" && c2 === "salt" || c1 === "salt" && c2 === "water") {
+        color = "#a3c4f3";
+        result = "Salt dissolved in water.";
+    }
+    else if (c1 === "alcohol" && c2 === "water" || c1 === "water" && c2 === "alcohol") {
+        color = "#ffeed5";
+        result = "Alcohol + water mix partially.";
+    }
+    else if (c1 === c2) {
+        color = "#dcdcdc";
+        result = "Both chemicals are the same. No reaction.";
+    }
+
+    box.style.background = color;
+    text.innerHTML = result;
+}
+</script>
+
+</body>
+</html>
