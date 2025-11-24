@@ -2,105 +2,94 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>DLab — VR Chemistry Lab (Prototype)</title>
+  <title>DLab — VR Chemistry Lab (GLB models)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="styles.css" />
-  <!-- A-Frame (WebXR) -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <!-- physics & interactions -->
   <script src="https://cdn.jsdelivr.net/npm/aframe-physics-system@5.0.0/dist/aframe-physics-system.min.js"></script>
   <script src="https://unpkg.com/super-hands@^4.0.0/dist/super-hands.min.js"></script>
   <script src="https://unpkg.com/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
-  <!-- app logic -->
   <script src="app.js" defer></script>
 </head>
 <body>
-
   <header class="page-header">
     <img class="brand" src="/mnt/data/A_series_of_digital_UI_mockup_screens_for_a_digita.png" alt="Dlab mockup" />
     <div>
-      <h1>DLab — VR Chemistry Lab (Prototype)</h1>
-      <p class="muted">Grab instruments, pour reagents, run titration. Works in WebXR on Quest / desktop.</p>
+      <h1>DLab — VR Chemistry Lab (GLB Visuals)</h1>
+      <p class="muted">Grab real 3D models: beaker, pipette, bunsen, burette. Works with Quest / WebXR.</p>
     </div>
   </header>
 
-  <!-- Controls for non-VR (desktop fallback) -->
   <section class="controls">
     <label>Choose Chemical:
-      <select id="chemicalSelect">
-        <option value="hcl">HCl (0.1M)</option>
-        <option value="naoh">NaOH (0.1M)</option>
-        <option value="water">H₂O</option>
-        <option value="ethanol">Ethanol</option>
-        <option value="phenolph">Phenolphthalein (indicator)</option>
-        <option value="silver">AgNO₃ (salt)</option>
-      </select>
+      <select id="chemicalSelect"></select>
     </label>
-    <button id="spawnBtn">Spawn Flask / Pipette</button>
+    <label>Volume (ml):
+      <input id="volumeInput" type="number" min="1" max="500" value="10" />
+    </label>
+    <button id="spawnBeaker">Spawn Beaker</button>
+    <button id="spawnPipette">Spawn Pipette</button>
+    <button id="spawnBunsen">Spawn Bunsen Burner</button>
     <label><input type="checkbox" id="safetyChk" /> Show Safety Panel</label>
   </section>
 
-  <!-- A-Frame scene -->
   <a-scene physics="gravity: -9.8" vr-mode-ui="enabled: true" embedded>
-    <!-- Camera + controllers -->
-    <a-entity id="cameraRig" position="0 1.6 3">
-      <a-entity camera look-controls wasd-controls>
-        <!-- cursor for non-VR -->
-        <a-cursor id="cursor" fuse="false" rayOrigin="mouse"
-                  material="color: white; shader: flat" geometry="radiusInner: 0.005; radiusOuter: 0.01"></a-cursor>
-      </a-entity>
+    <a-assets>
+      <!-- glb asset paths (place them in /assets/) -->
+      <a-asset-item id="beakerGLB" src="assets/beaker.glb"></a-asset-item>
+      <a-asset-item id="pipetteGLB" src="assets/pipette.glb"></a-asset-item>
+      <a-asset-item id="bunsenGLB" src="assets/bunsen.glb"></a-asset-item>
+      <a-asset-item id="buretteGLB" src="assets/burette.glb"></a-asset-item>
+      <img id="brandImg" src="/mnt/data/A_series_of_digital_UI_mockup_screens_for_a_digita.png" />
+    </a-assets>
 
-      <!-- Left hand -->
+    <!-- camera rig + controllers -->
+    <a-entity id="cameraRig" position="0 1.6 3">
+      <a-entity camera look-controls>
+        <a-cursor fuse="false" rayOrigin="mouse"
+                  material="color: white; shader: flat" geometry="radiusInner: 0.005; radiusOuter: 0.01">
+        </a-cursor>
+      </a-entity>
       <a-entity id="leftHand" laser-controls="hand: left" super-hands></a-entity>
-      <!-- Right hand (grab/pinch) -->
       <a-entity id="rightHand" laser-controls="hand: right" super-hands></a-entity>
     </a-entity>
 
-    <!-- Lighting -->
     <a-entity light="type: ambient; intensity: 0.6"></a-entity>
-    <a-entity light="type: directional; intensity: 0.8" position="0 5 2"></a-entity>
+    <a-entity light="type: directional; intensity: 0.9" position="0 6 2"></a-entity>
 
-    <!-- Floor and table -->
-    <a-plane rotation="-90 0 0" width="20" height="20" color="#e9eef6"></a-plane>
+    <a-plane rotation="-90 0 0" width="30" height="30" color="#e9eef6"></a-plane>
+    <a-box id="table" position="0 0.75 0" width="3" height="0.12" depth="1.6" color="#2f2f2f" static-body></a-box>
 
-    <!-- Workspace table -->
-    <a-box id="table" position="0 0.75 0" width="3" height="0.1" depth="1.6" color="#444" static-body></a-box>
-
-    <!-- Instrument rack (left) -->
-    <a-entity id="instrumentRack" position="-2 0.9 -0.6">
-      <a-box position="0 0 0" depth="0.3" height="1.4" width="0.2" color="#2b2b2b"></a-box>
-      <!-- icons will spawn here dynamically -->
+    <!-- pre-placed beaker entity (model used as child mesh) -->
+    <a-entity id="workBeaker" position="0 0.85 -0.25">
+      <a-entity gltf-model="#beakerGLB" scale="0.8 0.8 0.8" class="interactive" static-body></a-entity>
+      <!-- dynamic 'liquid' is an invisible plane/mesh we manipulate visually (we use shader color on overlay) -->
+      <a-entity id="liquidVisual" geometry="primitive: plane; width: 0.28; height: 0.18" rotation="-90 0 0"
+                material="color: #7fc8ff; opacity: 0.95; shader: flat" position="0 0.095 0.02"></a-entity>
     </a-entity>
 
-    <!-- Reaction monitor (right) -->
-    <a-entity id="monitorPanel" position="2 1.3 -0.6">
-      <a-box width="0.8" height="0.5" depth="0.05" color="#0b1320"></a-box>
-      <a-text id="monitorText" value="Reaction Monitor:\nNo reaction yet." position="-0.35 0.05 0.03" color="#9de0ff" wrap-count="30"></a-text>
+    <!-- instrument placeholders will spawn near the table -->
+    <a-entity id="spawner" position="0 1.4 -0.9"></a-entity>
+
+    <!-- reaction monitor -->
+    <a-entity id="monitorPanel" position="2 1.2 -0.6">
+      <a-box width="0.9" height="0.6" depth="0.05" color="#06121a"></a-box>
+      <a-text id="monitorText" value="Reaction Monitor:\nNo reaction yet." position="-0.4 0.1 0.03" color="#9de0ff"
+              wrap-count="30"></a-text>
     </a-entity>
 
-    <!-- Example beaker (preplaced) with "liquid" child -->
-    <a-entity id="beaker1" position="0 0.85 -0.2" rotation="0 0 0">
-      <!-- glass (transparent) -->
-      <a-cylinder id="glass" radius="0.12" height="0.22" color="#ffffff" opacity="0.12"
-                  material="metalness:0; roughness:0.05; side:double" static-body></a-cylinder>
-      <!-- liquid (scale changes to simulate level) -->
-      <a-cylinder id="liquid" radius="0.115" height="0.001" position="0 -0.09 0" color="#a3c4f3"></a-cylinder>
-      <!-- beaker collider for physics -->
-      <a-cylinder radius="0.12" height="0.22" visible="false" static-body></a-cylinder>
-    </a-entity>
-
-    <!-- Grip instructions -->
-    <a-entity position="0 2 -1.5">
-      <a-text value="Use controllers to grab items. Press trigger to pour near beaker." color="#ffffff" align="center"></a-text>
-    </a-entity>
-
-    <!-- Ground grid (visual) -->
-    <a-grid></a-grid>
   </a-scene>
 
-  <footer class="page-footer">
-    <small>Prototype built for DLab. For production-grade chemistry engines, we recommend Unity + URP + real-time fluids.</small>
-  </footer>
+  <div id="safetyModal" class="modal hidden">
+    <div class="modal-inner">
+      <h3>Safety Panel</h3>
+      <div id="safetyContent"></div>
+      <button id="closeSafety">Close</button>
+    </div>
+  </div>
 
+  <footer class="page-footer">
+    <small>Dlab VR — GLB visual upgrade. For production-ready fluid sims port to Unity (instructions below).</small>
+  </footer>
 </body>
 </html>
