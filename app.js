@@ -174,4 +174,21 @@
     };
   }
 
-})();
+})
+  // simple stoichiometry helper (moles based)
+// reaction example: HCl + NaOH -> NaCl + H2O  (1:1)
+function stoichiometrySolve(reactants, reactionRatios){
+  // reactants: { 'hcl': mass_or_moles } - we use moles directly for simplicity
+  // reactionRatios: { 'hcl':1, 'naoh':1 }
+  // compute limiting reagent
+  const ratios = reactionRatios;
+  const availableStoich = {};
+  Object.keys(ratios).forEach(r=>{
+    availableStoich[r] = (reactants[r]||0) / ratios[r];
+  });
+  // limiting reagent = min availableStoich
+  let limit = Infinity, limiting=null;
+  Object.keys(availableStoich).forEach(k=>{ if(availableStoich[k] < limit){ limit = availableStoich[k]; limiting=k;} });
+  return { limiting, maxReactionMoles: limit };
+}
+();
