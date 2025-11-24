@@ -191,4 +191,9 @@ function stoichiometrySolve(reactants, reactionRatios){
   Object.keys(availableStoich).forEach(k=>{ if(availableStoich[k] < limit){ limit = availableStoich[k]; limiting=k;} });
   return { limiting, maxReactionMoles: limit };
 }
+firebase.initializeApp(window.firebaseConfig);
+
+const db = firebase.firestore();
+const auth = firebase.auth();
+
 ();
