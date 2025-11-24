@@ -199,4 +199,18 @@ const auth = firebase.auth();
 ();
 const provider = new firebase.auth.GoogleAuthProvider();
 firebase.auth().signInWithPopup(provider).then(result => { console.log('user', result.user); });
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /tests/{testId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth.token.email_verified == true && request.auth.token.email.matches('.*@schooldomain.edu$');
+    }
+    match /tests/{testId}/results/{resultId} {
+      allow write: if request.auth != null;
+      allow read: if request.auth != null && (request.auth.token.email.matches('.*@schooldomain.edu$') || resource.data.studentEmail == request.auth.token.email);
+    }
+  }
+}
+
 
